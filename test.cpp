@@ -1,13 +1,10 @@
 #include "cintn.h"
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
 
 void make_random_number(char *number)
 {
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < N; i++){
         number[i] = '0' + rand() % 10;
-
+    }
     number[N] = '\0';
 }
 
@@ -15,7 +12,6 @@ void add_strings(const char *a, const char *b, char *result)
 {
     int carry = 0;
     result[N] = '\0';
-
     for (int i = N - 1; i >= 0; i--)
     {
         int sum = (a[i] - '0') + (b[i] - '0') + carry;
@@ -28,19 +24,17 @@ void subtract_strings(const char *a, const char *b, char *result)
 {
     int borrow = 0;
     result[N] = '\0';
-
     for (int i = N - 1; i >= 0; i--)
     {
         int difference = (a[i] - '0') - (b[i] - '0') - borrow;
-
         if (difference < 0)
         {
             difference += 10;
             borrow = 1;
         }
-        else
+        else {
             borrow = 0;
-
+        }
         result[i] = '0' + difference;
     }
 }
@@ -68,20 +62,20 @@ int run_test(int test_number)
 
     if (!(real_sum == expected_sum))
     {
-        std::cout << "Test " << test_number << " failed for operator +" << std::endl;
-        std::cout << "a = " << a << std::endl;
-        std::cout << "b = " << b << std::endl;
-        std::cout << "a + b = " << real_sum << std::endl;
+        std::cout << "Test " << test_number << " failed for operator +" << "\n";
+        std::cout << "a = " << a << "\n";
+        std::cout << "b = " << b << "\n";
+        std::cout << "a + b = " << real_sum << "\n";
         std::cout << "expected = " << expected_sum << std::endl;
         return 0;
     }
 
     if (!(real_difference == expected_difference))
     {
-        std::cout << "Test " << test_number << " failed for operator -" << std::endl;
-        std::cout << "a = " << a << std::endl;
-        std::cout << "b = " << b << std::endl;
-        std::cout << "a - b = " << real_difference << std::endl;
+        std::cout << "Test " << test_number << " failed for operator -" << "\n";
+        std::cout << "a = " << a << "\n";
+        std::cout << "b = " << b << "\n";
+        std::cout << "a - b = " << real_difference << "\n";
         std::cout << "expected = " << expected_difference << std::endl;
         return 0;
     }
@@ -107,13 +101,15 @@ int main()
 
     for (int i = 1; i <= test_count; i++)
     {
-        if (run_test(i))
+        if (run_test(i)){
             passed++;
-        else
+        }
+        else {
             break;
+        }
     }
 
-    std::cout << "Passed: " << passed << " / " << test_count << std::endl;
+    std::cout << "Passed: " << passed << " / " << test_count << "\n";
 
     if (passed == test_count)
     {
