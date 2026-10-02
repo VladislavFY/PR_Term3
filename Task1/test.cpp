@@ -1,4 +1,4 @@
-#include "cintn.h"
+#include "CIntN.h"
 
 void make_random_number(char *number)
 {
@@ -60,6 +60,29 @@ int run_test(int test_number)
     CIntN real_sum = a + b;
     CIntN real_difference = a - b;
 
+
+    if ((real_sum == expected_sum) && (real_difference == expected_difference))
+    {
+        std::cout << "Test " << test_number << " passed for operators + and  -" << "\n";
+        std::cout << "a = "<< a;
+        std::cout << "b = " << b;
+        std::cout << "a + b = " << real_sum;
+        std::cout << "a - b = " << real_difference;
+        std::cout << "expected sum = " << expected_sum;
+        std::cout << "expected difference = " << expected_difference << std::endl;
+        std::cout << "\n\n\n";
+        return 1;
+    } 
+    
+    if (!(real_difference == expected_difference))
+    {
+        std::cout << "Test " << test_number << " failed for operator -" << "\n";
+        std::cout << "a = " << a;
+        std::cout << "b = " << b;
+        std::cout << "a - b = " << real_difference;
+        std::cout << "expected = " << expected_difference << std::endl;
+        return 0;
+    }
     if (!(real_sum == expected_sum))
     {
         std::cout << "Test " << test_number << " failed for operator +" << "\n";
@@ -69,17 +92,6 @@ int run_test(int test_number)
         std::cout << "expected = " << expected_sum << std::endl;
         return 0;
     }
-
-    if (!(real_difference == expected_difference))
-    {
-        std::cout << "Test " << test_number << " failed for operator -" << "\n";
-        std::cout << "a = " << a << "\n";
-        std::cout << "b = " << b << "\n";
-        std::cout << "a - b = " << real_difference << "\n";
-        std::cout << "expected = " << expected_difference << std::endl;
-        return 0;
-    }
-
     return 1;
 }
 
@@ -88,7 +100,7 @@ int main()
     int test_count;
     int passed = 0;
 
-    std::cout << "N = " << N << std::endl;
+    std::cout << "N = " << N << "\n";
     std::cout << "Enter number of tests: ";
 
     if (!(std::cin >> test_count) || test_count <= 0)
@@ -102,6 +114,7 @@ int main()
     for (int i = 1; i <= test_count; i++)
     {
         if (run_test(i)){
+            
             passed++;
         }
         else {
