@@ -6,7 +6,7 @@
 #include <ctime>
 #include <cstring>
 
-#define N 20
+#define N 4
 
 class CIntN
 {
@@ -19,8 +19,8 @@ public:
     CIntN(const char *str);
     CIntN(const CIntN &b);
     ~CIntN();
-    CIntN& operator+(const CIntN &b) const;
-    CIntN& operator-(const CIntN &b) const;
+    CIntN operator+(const CIntN &b) const;
+    CIntN operator-(const CIntN &b) const;
     int operator==(const CIntN &b) const;
     friend std::ostream& operator<<(std::ostream &out, const CIntN &number);
 };
