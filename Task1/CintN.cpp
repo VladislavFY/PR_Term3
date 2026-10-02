@@ -1,4 +1,4 @@
-#include "cintn.h"
+#include "CIntN.h"
 
 CIntN::CIntN()
 {
@@ -39,7 +39,7 @@ CIntN::~CIntN()
 {
 }
 
-CIntN& CIntN::operator+(const CIntN &b) const
+CIntN CIntN::operator+(const CIntN &b) const
 {
     CIntN result;
     int carry = 0;
@@ -52,7 +52,7 @@ CIntN& CIntN::operator+(const CIntN &b) const
     return result;
 }
 
-CIntN& CIntN::operator-(const CIntN &b) const
+CIntN CIntN::operator-(const CIntN &b) const
 {
     CIntN result;
     int borrow = 0;
@@ -84,8 +84,12 @@ int CIntN::operator==(const CIntN &b) const
 std::ostream& operator<<(std::ostream &out, const CIntN &number)
 {
     int i = N - 1;
-    while (i > 0 && number.m_digits[i] == 0){ i-- };
-    for (; i >= 0; i--){ out << (int)number.m_digits[i]};
+    while (i > 0 && number.m_digits[i] == 0){
+        i--; 
+    }
+    for (; i >= 0; i--){ 
+        out << (int)number.m_digits[i];
+    }
     
     out << std::endl;
     return out;
