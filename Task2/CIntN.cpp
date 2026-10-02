@@ -228,6 +228,15 @@ CIntN CIntN::operator-(const CIntN &b) const
     return *this + opposite;
 }
 
+int CIntN::operator==(const CIntN &b) const
+{
+    if (is_zero() && b.is_zero()) return true;
+
+    if (m_negative != b.m_negative) return false;
+
+    return compare_abs(b) == 0;
+}
+
 std::ostream& operator<<(std::ostream &out, const CIntN &number)
 {
     if (number.m_n == 0 || number.m_digits == nullptr)
