@@ -26,6 +26,8 @@ public:
     CIntN operator+(const CIntN &b) const;
     CIntN operator-(const CIntN &b) const;
 
+    bool operator==(const CIntN &b) const;
+
     friend std::ostream& operator<<(std::ostream &out, const CIntN &number);
 };
 
