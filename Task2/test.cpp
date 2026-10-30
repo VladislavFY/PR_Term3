@@ -198,7 +198,7 @@ void subtract_strings(const char *a, const char *b, char *result)
     delete []opposite_b;
 }
 
-// Independent schoolbook multiplication, used only in the test.
+// Long numbers multiplication using cross-digit algortihm
 void multiply_strings(const char *a, const char *b, char *result)
 {
     bool negative = (is_negative(a) != is_negative(b));

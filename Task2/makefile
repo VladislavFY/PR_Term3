@@ -1,18 +1,9 @@
-CXX = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
-
-all: test
-
-test: CIntN.o test.o
-	$(CXX) $(CXXFLAGS) CIntN.o test.o -o test
+all: CIntN.o test.o
+	g++ CIntN.o test.o && rm *.o
 
 CIntN.o: CIntN.cpp CIntN.h
-	$(CXX) $(CXXFLAGS) -c CIntN.cpp
+	g++ -c CIntN.cpp
 
 test.o: test.cpp CIntN.h
-	$(CXX) $(CXXFLAGS) -c test.cpp
+	g++ -c test.cpp
 
-clean:
-	rm -f *.o test
-
-.PHONY: all clean

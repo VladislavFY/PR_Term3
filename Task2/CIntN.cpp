@@ -83,13 +83,16 @@ CIntN& CIntN::operator=(const CIntN &b)
 {
     if (this == &b) return *this;
 
+    unsigned char *new_digits = new unsigned char[b.m_n];
+
+    for (int i = 0; i < b.m_n; i++)
+        new_digits[i] = b.m_digits[i];
+
     delete []m_digits;
 
+    m_digits = new_digits;
     m_n = b.m_n;
     m_negative = b.m_negative;
-    m_digits = new unsigned char[m_n];
-
-    for (int i = 0; i < m_n; i++) m_digits[i] = b.m_digits[i];
 
     return *this;
 }
