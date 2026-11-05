@@ -1,0 +1,141 @@
+TASK3: MINIMAL CHANGES FROM TASK2
+=================================
+
+Source: Task2 from the uploaded PR_Term3-main(1).zip archive.
+Goal: Keep the CIntN arithmetic, program structure, test menu and coding style;
+replace manually owned dynamic memory with C++ smart pointers, and demonstrate
+both exclusive ownership (unique_ptr) and shared ownership (shared_ptr).
+
+FILES INCLUDED
+--------------
+CIntN.h       - changed
+CIntN.cpp     - changed
+test.cpp      - changed
+makefile      - changed
+check.py      - unchanged, copied from Task2
+Task3_changes.txt - this explanation
+
+1) CIntN.h
+----------
+- Changed the member:
+      unsigned char *m_digits;
+  to:
+      std::unique_ptr<unsigned char[]> m_digits;
+  The [] matters: this pointer owns an array, not one unsigned char.
+- Added #include <memory> for unique_ptr, and <ostream> for std::ostream.
+  Removed includes that are no longer needed in this header.
+- Changed the destructor declaration to:
+      ~CIntN() = default;
+  unique_ptr automatically deletes the digit array when CIntN is destroyed.
+- Added noexcept to the move constructor and move assignment declarations.
+  These operations just transfer ownership and simple data members.
+- Kept the same public interface for constructors, arithmetic, comparison
+  and stream output. Preserved the section/comment style shown in your newer
+  header screenshot (correcting the heading spelling to "Assignments").
+
+2) CIntN.cpp
+------------
+- Added direct includes <cstring> (strlen) and <utility> (std::move).
+- Each old allocation:
+      m_digits = new unsigned char[m_n];
+  is now:
+      m_digits = std::make_unique<unsigned char[]>(m_n);
+  This allocates the digit array and transfers ownership to m_digits.
+- Retained the existing digit-initialization loops and all string parsing
+  to minimize changes to Task2. (make_unique already value-initializes the
+  allocated unsigned char array, so these loops are now redundant but safe.)
+- Copy constructor still allocates its OWN array and copies every digit:
+  copying CIntN must produce an independent value, even though unique_ptr
+  itself cannot be copied. Complexity remains O(N).
+- Move constructor transfers the existing array with:
+      m_digits = std::move(b.m_digits);
+  It does not copy the digits. The source unique_ptr becomes null automatically;
+  no explicit b.m_digits = nullptr is needed. Complexity O(1).
+- Removed the old destructor implementation containing delete[].
+  The header's default destructor is sufficient.
+- Copy assignment first makes a new digit array and copies into it, THEN
+  replaces m_digits with std::move(digits). Unlike the original Task2,
+  allocation failure leaves the old object unchanged (exception safety).
+  Complexity O(N).
+- Move assignment uses std::move(b.m_digits); the destination's old digit
+  array is freed automatically by unique_ptr. No explicit delete[] or
+  resetting the source pointer is required. Complexity O(1).
+- NO changes to the algorithms for +, -, *, ==, is_zero, compare_abs or <<.
+  unique_ptr<T[]> supports the original m_digits[i] syntax.
+
+3) test.cpp
+-----------
+- Added explicit standard library includes <iostream>, <cstring>,
+  <cstdlib>, <memory> and <utility>.
+- Replaced every heap-allocated char[] or int[] buffer previously owned by
+  a raw pointer with std::unique_ptr<char[]> or std::unique_ptr<int[]>.
+  Allocation now uses std::make_unique<T[]>(length).
+- Removed all manual delete[] statements, including cleanup on early return.
+  The smart pointers clean up automatically on every function exit.
+- When an existing function expects a plain char* or const char*, passed
+  buffer.get() instead. get() provides access to the array WITHOUT
+  transferring ownership; do not delete the returned pointer.
+- Left ordinary NON-OWNING char* function parameters unchanged, as well as
+  local fixed-size arrays char text[40] and char option[32]. These do not
+  own dynamic memory and do not need smart pointers.
+- Added smart_pointer_test(), called by the existing AUTOMATIC test mode:
+    * make_unique<CIntN> creates one exclusively owned number.
+    * std::move transfers that unique_ptr to a different owner.
+    * make_shared<CIntN> creates one shared-ownership number.
+    * Copying a shared_ptr gives two owners of the SAME object.
+    * use_count() == 2 verifies the two current shared owners.
+  This test is deliberately short and does not change the test menu.
+- All existing arithmetic tests, reference calculations and manual mode
+  remain unchanged except for buffer ownership and required .get() calls.
+
+4) makefile
+-----------
+- Changed -std=c++11 to -std=c++14.
+  std::make_unique (including make_unique<T[]> for arrays) needs C++14.
+- Kept all targets, build commands and other flags unchanged.
+
+5) check.py
+-----------
+- UNCHANGED. It does not allocate C++ memory and needs no smart pointers.
+
+WHY NOT shared_ptr<unsigned char[]> INSIDE CIntN?
+-------------------------------------------------
+CIntN behaves like a number: copying it must give independently stored digits.
+A shared_ptr for m_digits would make accidental sharing/aliasing too easy.
+A unique_ptr array inside CIntN + shared_ptr<CIntN> in a separate test is a
+simple demonstration of BOTH ownership models without changing arithmetic
+semantics. CIntN still has a manually written deep-copy constructor and
+copy assignment because unique_ptr is not copyable.
+
+WHAT STAYED THE SAME?
+---------------------
+- Base-10 little-endian digit representation and sign handling.
+- Arithmetic, comparison and output logic.
+- Constructors' input behavior, including invalid strings becoming zero.
+- The interactive menu: 0 Exit, 1 Automatic, 2 Manual.
+- The independent schoolbook arithmetic used for verification.
+- Existing file names and the general layout and indentation.
+
+BUILD AND USE
+-------------
+1. Copy the entire Task3 folder into your existing local PR_Term3 repository
+   (the folder that GitHub Desktop opens with "Show in Finder").
+2. Open Terminal in that Task3 folder and run:
+      make
+      ./test
+3. Choose 1 for automatic tests or 2 for manual tests.
+4. In GitHub Desktop, verify Task3 appears under Changes. Enter a summary,
+   click "Commit to main", then "Push origin".
+
+TESTS PERFORMED
+---------------
+- Built successfully with g++ -std=c++14 -Wall -Wextra -pedantic.
+- Built successfully with clang++ -std=c++14 -Wall -Wextra -Wpedantic -Werror,
+  using AddressSanitizer and UndefinedBehaviorSanitizer.
+- All fixed boundary cases, the new smart pointer test and 250 randomized
+  test cases passed in both normal and sanitizer builds.
+- Manual signed-number arithmetic run passed.
+
+NOTE: This is the minimal smart-pointer conversion, not a redesign. No
+unrelated data structures, STL containers, algorithms or third-party libraries
+were introduced.
