@@ -1,9 +1,4 @@
 #include "CIntN.h"
-#include <iostream>
-#include <cstring>
-#include <cstdlib>
-#include <memory>
-#include <utility>
 
 void make_random_number(char *str, int n)
 {

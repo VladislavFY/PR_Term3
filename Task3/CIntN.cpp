@@ -1,6 +1,5 @@
 #include "CIntN.h"
-#include <cstring>
-#include <utility>
+
 
 CIntN::CIntN(int n)
 {

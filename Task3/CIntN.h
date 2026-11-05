@@ -3,6 +3,9 @@
 
 #include <memory>
 #include <ostream>
+#include <cstring>
+#include <utility>
+#include <iostream>
 
 class CIntN
 {
